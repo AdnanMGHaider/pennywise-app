@@ -50,7 +50,7 @@
 
 7. **Deployment**
    - Vercel for frontend
-   - Render for backend
+   - Supabase for backend (Spring Boot service + Postgres)
    - CI/CD via GitHub Actions
 
 ---
@@ -69,7 +69,7 @@
 
 - Java 21 + Spring Boot 3.5.0
 - Maven
-- PostgreSQL (hosted on Render or Railway)
+- PostgreSQL (hosted on Supabase)
 - REST API
 - JWT Auth (via Spring Security)
 - OpenAI integration (GPT-4o)
@@ -132,68 +132,71 @@
 
 ## 9. Folder Structure
 
-pennywise-app/
-├── backend/
-│ ├── src/main/java/com/pennywise/
-│ │ ├── controller/
-│ │ ├── service/
-│ │ │ ├── advice/
-│ │ │ ├── transaction/
-│ │ │ ├── notification/ ← future Redis pub/sub
-│ │ │ ├── ingestion/ ← future Kafka streaming
-│ │ ├── model/
-│ │ ├── repository/
-│ │ ├── config/
-│ ├── application.yml
-│ └── Dockerfile
-├── frontend/
-│ ├── app/
-│ │ ├── dashboard/
-│ │ ├── transactions/
-│ │ ├── advice/
-│ │ ├── settings/
-│ └── public/
-│ └── tailwind.config.js
-├── deploy/
-│ ├── terraform/
-│ ├── render.yaml
-│ ├── ci.yaml
-├── docs/
-│ ├── project-plan.md
-│ ├── changelog.md
+pennywise-app/  
+├── backend/  
+│ ├── src/main/java/com/pennywise/  
+│ │ ├── controller/  
+│ │ ├── service/  
+│ │ │ ├── advice/  
+│ │ │ ├── transaction/  
+│ │ │ ├── notification/ ← future Redis pub/sub  
+│ │ │ ├── ingestion/ ← future Kafka streaming  
+│ │ ├── model/  
+│ │ ├── repository/  
+│ │ ├── config/  
+│ ├── application.yml  
+│ └── Dockerfile  
+├── frontend/  
+│ ├── app/  
+│ │ ├── dashboard/  
+│ │ ├── transactions/  
+│ │ ├── advice/  
+│ │ ├── settings/  
+│ └── public/  
+│ └── tailwind.config.js  
+├── deploy/  
+│ ├── terraform/  
+│ ├── render.yaml  
+│ ├── ci.yaml  
+├── docs/  
+│ ├── project-plan.md  
+│ ├── changelog.md  
 │ ├── current-task.md
 
 ---
 
 ## 10. Deployment Plan
 
-- Backend: Render service (PostgreSQL + JAR build)
-- Frontend: Vercel (auto-deploy via GitHub push)
-- GitHub Actions CI pipeline
-- Health check endpoint (`/health`) + uptime badge in README
+- **Backend & Database:** Supabase project (host Spring Boot jar + Postgres)
+  - Push `backend/` to GitHub
+  - Supabase builds the JAR (Maven) and runs it on a dedicated container
+  - Supabase Postgres credentials (URL, user, password) supplied as env vars
+- **Frontend:** Vercel (auto-deploy on `main`)
+- **CI/CD:** GitHub Actions (run tests, then deploy)
+- **Health check:** `/health` endpoint + uptime badge in README
 
 ---
 
 ## 11. Budget & Cost Awareness
 
-| Tool/Service        | Free Tier? | Notes                                               |
-| ------------------- | ---------- | --------------------------------------------------- |
-| Next.js + Tailwind  | ✅         | Free Open-source frontend stack                     |
-| Vercel              | ✅         | Free (Hobby) Ideal for portfolio hosting            |
-| Spring Boot         | ✅         | Free Open-source                                    |
-| Java 21             | ✅         | Free LTS, no restrictions                           |
-| PostgreSQL (Render) | ✅         | Free (256MB) Paid if DB exceeds usage               |
-| Render backend      | ✅         | Free (750 hrs) Paid if uptime/bandwidth exceeds     |
-| OpenAI API (GPT-4o) | ❌         | Paid ~$0.005 per query; can mock in dev             |
-| GitHub Actions      | ✅         | Free (2k min) Works great for CI/CD                 |
-| Redis, Kafka, AWS   | ✅         | Limited/free Only needed later for advanced scaling |
-| Terraform CLI       | ✅         | Free Paid only for Terraform Cloud                  |
+| Tool/Service          | Free Tier? | Notes                                                                                   |
+| --------------------- | ---------- | --------------------------------------------------------------------------------------- |
+| Next.js + Tailwind    | ✅         | Free Open-source frontend stack                                                         |
+| Vercel                | ✅         | Free (Hobby) Ideal for portfolio hosting                                                |
+| Spring Boot           | ✅         | Free Open-source                                                                        |
+| Java 21               | ✅         | Free LTS, no restrictions                                                               |
+| PostgreSQL (Supabase) | ✅         | Free (500 MB) Paid if usage grows                                                       |
+| Supabase Backend      | ✅         | Free Tier includes shared CPU hours for edge functions; JAR can run as an API container |
+| OpenAI API (GPT-4o)   | ❌         | Paid (~\$0.005 per query; can mock in dev)                                              |
+| GitHub Actions        | ✅         | Free (2k min) Works great for CI/CD                                                     |
+| Redis, Kafka, AWS     | ✅         | Limited/free Only needed later for advanced scaling                                     |
+| Terraform CLI         | ✅         | Free—paid only for Terraform Cloud                                                      |
 
 ---
 
 ## 12. Résumé Pitch Example
 
-Built a full-stack AI-powered personal finance dashboard using Spring Boot 3.5.0, Java 21, PostgreSQL, and Next.js 15 (JavaScript). Simulated real-world bank feeds and delivered GPT-4o savings advice with interactive visualizations. Designed a future-ready architecture supporting streaming data, pub/sub updates, and geo analytics.
+Built a full-stack AI-powered personal finance dashboard using Spring Boot 3.5.0, Java 21, Supabase Postgres, and Next.js 15 (JavaScript). Simulated real-world bank feeds and delivered GPT-4o savings advice with interactive visualizations. Designed a future-ready architecture supporting streaming data, pub/sub updates, and geo analytics.
 
 ---
 
