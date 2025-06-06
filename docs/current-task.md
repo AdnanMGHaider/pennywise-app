@@ -1,10 +1,7 @@
-Milestone 4 – Transaction Feed has been completed.
+Milestone 5 – Savings Goals has been completed.
 
-**Next:** Milestone 5 – Savings Goals
+**Next:** Milestone 6 – Dashboard Visualization
 
-- Create `Goal` JPA entity with fields: `id`, `user_id`, `target_amount`, `category_focus`, `start_date`, `end_date`.
-- Add `GoalRepository`, `GoalService`, and `GoalController`.
-- Expose:
-  - `POST /api/goals` – set or update a user’s savings goal.
-  - `GET /api/goals` – retrieve the authenticated user’s current goal.
-- Ensure these endpoints are protected by JWT.
+- Build endpoints to aggregate transaction data by category & by month:
+  - `GET /api/charts/summary` – returns spend breakdown.
+- Implement service logic to query `transactions` and format results for pie/bar/line charts.

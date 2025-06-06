@@ -48,3 +48,20 @@
   - `GET /api/transactions` → returns authenticated user’s transactions (200 OK, empty array if none).
   - `POST /api/transactions` → creates a new transaction (201 Created, returns saved record).
 - Seeded mock data via `DataSeeder` (20,000 transactions per user), then disabled it once data was inserted.
+
+### [Milestone 5 – Savings Goals]
+
+- Created `Goal` JPA entity (`com.pennywise.model.Goal`) with fields: `id`, `userId`, `targetAmount`, `categoryFocus`, `startDate`, `endDate`.
+- Added `GoalRepository` (extends `JpaRepository<Goal, UUID>`) with `findByUserId(UUID)`.
+- Implemented `GoalService`:
+  - `createOrUpdateGoal(UUID, BigDecimal, String, Instant, Instant)` to insert or update a user’s goal.
+  - `getGoalForUser(UUID)` to fetch the current goal.
+- Defined DTOs in `com.pennywise.controller`:
+  - `GoalRequest` for incoming JSON (`targetAmount`, `categoryFocus`, `startDate`, `endDate`).
+  - `GoalResponse` for outgoing JSON (`id`, `targetAmount`, `categoryFocus`, `startDate`, `endDate`).
+- Built `GoalController`:
+  - `POST /api/goals` → set or update the authenticated user’s savings goal (201 Created or 200 OK + JSON).
+  - `GET  /api/goals` → retrieve the authenticated user’s current goal (200 OK + JSON or 404 if none).
+- Confirmed:
+  - App starts without errors and a `goals` table is created.
+  - Endpoints enforce JWT protection and manual curl tests returned expected 404/201/200.
