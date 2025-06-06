@@ -34,3 +34,17 @@
   - Registration endpoint (`POST /api/auth/register`) creates a new user (201).
   - Login with valid credentials returns 200 + JWT.
   - Calling a protected endpoint (e.g. `/api/transactions`) with that JWT yields 404 (authenticated but no handler yet).
+
+### [Milestone 4 – Transaction Feed]
+
+- Created `Transaction` JPA entity (`com.pennywise.model.Transaction`) with fields: `id`, `userId`, `date`, `amount`, `category`, `merchant`, `lat`, `lng`, `description`.
+- Added `TransactionRepository` (extends `JpaRepository<Transaction, UUID>`) with `findAllByUserIdOrderByDateDesc(UUID)`.
+- Implemented `TransactionService`:
+  - `getTransactionsForUser(UUID)` returns all transactions for a user sorted by date descending.
+  - `createTransaction(Transaction)` saves a new transaction.
+  - `getUserIdByEmail(String)` helper to map email → userId.
+- Added `TransactionRequest` and `TransactionResponse` DTOs for JSON request/response.
+- Built `TransactionController`:
+  - `GET /api/transactions` → returns authenticated user’s transactions (200 OK, empty array if none).
+  - `POST /api/transactions` → creates a new transaction (201 Created, returns saved record).
+- Seeded mock data via `DataSeeder` (20,000 transactions per user), then disabled it once data was inserted.

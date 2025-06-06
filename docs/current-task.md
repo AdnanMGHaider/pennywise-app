@@ -1,11 +1,10 @@
-Milestone 3 – User Authentication & JWT Filters has been completed.
+Milestone 4 – Transaction Feed has been completed.
 
-**Next:** Milestone 4 – Transaction Feed
+**Next:** Milestone 5 – Savings Goals
 
-- Create `Transaction` JPA entity with fields: `id`, `user_id`, `date`, `amount`, `category`, `merchant`, `lat`, `lng`, `description`.
-- Add `TransactionRepository`, `TransactionService`, and `TransactionController`.
-- Seed mock transaction data (20k+ entries per user).
+- Create `Goal` JPA entity with fields: `id`, `user_id`, `target_amount`, `category_focus`, `start_date`, `end_date`.
+- Add `GoalRepository`, `GoalService`, and `GoalController`.
 - Expose:
-  - `GET /api/transactions` – return authenticated user’s transaction list.
-  - `POST /api/transactions` – add a new transaction.
+  - `POST /api/goals` – set or update a user’s savings goal.
+  - `GET /api/goals` – retrieve the authenticated user’s current goal.
 - Ensure these endpoints are protected by JWT.
