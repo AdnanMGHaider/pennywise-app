@@ -1,8 +1,8 @@
-Milestone 6 – Dashboard Visualization has been completed.
+Milestone 7 – GPT-4o Advice Generation has been completed.
 
-**Next:** Milestone 7 – GPT-4o Advice Generation
+**Next:** Milestone 8 – Responsive UI / UX
 
-- Integrate with OpenAI’s API to analyze the authenticated user’s last 30 days of spending.
-- Implement `AdviceService` to format transaction data and call GPT-4o.
-- Expose `GET /api/advice` to return 2–3 money-saving suggestions in plain English.
-- Secure the endpoint with existing JWT filters.
+- Implement the `/advice` page in Next.js (fetch from `GET /api/advice`).
+- Build a chat‐style interface using Tailwind + shadcn/ui.
+- Add dark/light mode toggle and mobile‐first responsive layouts.
+- Protect the route client‐side and display toast feedback on errors.

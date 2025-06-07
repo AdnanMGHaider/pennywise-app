@@ -25,89 +25,90 @@ import java.util.UUID;
 @RequestMapping("/api/goals")
 public class GoalController {
 
-    private final GoalService goalService;
-    private final UserService userService;
+        private final GoalService goalService;
+        private final UserService userService;
 
-    @Autowired
-    public GoalController(GoalService goalService, UserService userService) {
-        this.goalService = goalService;
-        this.userService = userService;
-    }
-
-    /**
-     * GET /api/goals
-     * Return the user’s existing Goal (200 OK + JSON) or 404 (not found).
-     *
-     * @param userDetails injected by Spring from the JWT filter (username is the
-     *                    email)
-     */
-    @GetMapping
-    public ResponseEntity<GoalResponse> getGoal(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        // 1) Convert the email (username) → UUID
-        UUID userId = userService.findByEmail(userDetails.getUsername())
-                .map(u -> u.getId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        // 2) Ask the service for the current Goal
-        Optional<Goal> existing = goalService.getGoalForUser(userId);
-
-        if (existing.isEmpty()) {
-            // 3a) If no goal exists for this user, return 404 Not Found
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        @Autowired
+        public GoalController(GoalService goalService, UserService userService) {
+                this.goalService = goalService;
+                this.userService = userService;
         }
 
-        // 3b) If it exists, wrap it in a GoalResponse and send 200 OK
-        Goal g = existing.get();
-        GoalResponse resp = new GoalResponse(
-                g.getId(),
-                g.getTargetAmount(),
-                g.getCategoryFocus(),
-                g.getStartDate(),
-                g.getEndDate());
-        return ResponseEntity.ok(resp);
-    }
+        /**
+         * GET /api/goals
+         * Return the user’s existing Goal (200 OK + JSON) or 404 (not found).
+         *
+         * @param userDetails injected by Spring from the JWT filter (username is the
+         *                    email)
+         */
+        @GetMapping
+        public ResponseEntity<GoalResponse> getGoal(
+                        @AuthenticationPrincipal UserDetails userDetails) {
+                // 1) Convert the email (username) → UUID
+                UUID userId = userService.findByEmail(userDetails.getUsername())
+                                .map(u -> u.getId())
+                                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-    /**
-     * POST /api/goals
-     * Create or update the user’s savings goal. If this user already has a goal,
-     * we overwrite it; otherwise, we create a fresh row.
-     *
-     * @param userDetails injected by Spring from the JWT filter
-     * @param request     JSON body mapped to GoalRequest
-     * @return 201 Created (if brand-new) or 200 OK (if updated), with the saved
-     *         GoalResponse JSON
-     */
-    @PostMapping
-    public ResponseEntity<GoalResponse> createOrUpdateGoal(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody GoalRequest request) {
-        // 1) Convert email → userId
-        UUID userId = userService.findByEmail(userDetails.getUsername())
-                .map(u -> u.getId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                // 2) Ask the service for the current Goal
+                Optional<Goal> existing = goalService.getGoalForUser(userId);
 
-        // 2) Delegate to the service
-        Goal saved = goalService.createOrUpdateGoal(
-                userId,
-                request.getTargetAmount(),
-                request.getCategoryFocus(),
-                request.getStartDate(),
-                request.getEndDate());
+                if (existing.isEmpty()) {
+                        // 3a) If no goal exists for this user, return 404 Not Found
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                }
 
-        // 3) Wrap saved Goal in a Response DTO
-        GoalResponse resp = new GoalResponse(
-                saved.getId(),
-                saved.getTargetAmount(),
-                saved.getCategoryFocus(),
-                saved.getStartDate(),
-                saved.getEndDate());
+                // 3b) If it exists, wrap it in a GoalResponse and send 200 OK
+                Goal g = existing.get();
+                GoalResponse resp = new GoalResponse(
+                                g.getId(),
+                                g.getTargetAmount(),
+                                g.getCategoryFocus(),
+                                g.getStartDate(),
+                                g.getEndDate());
+                return ResponseEntity.ok(resp);
+        }
 
-        // 4) Decide HTTP code: if this was newly created vs. updated.
-        // Simpler: always return 200 OK, or optionally check if existed:
-        boolean existed = goalService.getGoalForUser(userId).isPresent();
-        HttpStatus status = existed ? HttpStatus.OK : HttpStatus.CREATED;
+        /**
+         * POST /api/goals
+         * Create or update the user’s savings goal. If this user already has a goal,
+         * we overwrite it; otherwise, we create a fresh row.
+         *
+         * @param userDetails injected by Spring from the JWT filter
+         * @param request     JSON body mapped to GoalRequest
+         * @return 201 Created (if brand-new) or 200 OK (if updated), with the saved
+         *         GoalResponse JSON
+         */
+        @PostMapping
+        public ResponseEntity<GoalResponse> createOrUpdateGoal(
+                        @AuthenticationPrincipal UserDetails userDetails,
+                        @RequestBody GoalRequest request) {
+                // 1) Convert email → userId
+                UUID userId = userService.findByEmail(userDetails.getUsername())
+                                .map(u -> u.getId())
+                                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        return ResponseEntity.status(status).body(resp);
-    }
+                // 2) Check if a goal already exists *before* creating/updating
+                boolean existed = goalService.getGoalForUser(userId).isPresent();
+
+                // 3) Delegate to the service (will insert or update accordingly)
+                Goal saved = goalService.createOrUpdateGoal(
+                                userId,
+                                request.getTargetAmount(),
+                                request.getCategoryFocus(),
+                                request.getStartDate(),
+                                request.getEndDate());
+
+                // 4) Wrap saved Goal in a Response DTO
+                GoalResponse resp = new GoalResponse(
+                                saved.getId(),
+                                saved.getTargetAmount(),
+                                saved.getCategoryFocus(),
+                                saved.getStartDate(),
+                                saved.getEndDate());
+
+                // 5) Decide HTTP code based on whether it existed beforehand
+                HttpStatus status = existed ? HttpStatus.OK : HttpStatus.CREATED;
+
+                return ResponseEntity.status(status).body(resp);
+        }
 }

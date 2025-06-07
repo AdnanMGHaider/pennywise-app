@@ -19,49 +19,22 @@
 ## 3. Core MVP Features (1 Week)
 
 1. **User Authentication (Register/Login)**
-
-   - JWT-based auth with cookie/session or localStorage support
-   - Optional demo login
-
 2. **Transaction Feed**
-
-   - Mock data seeded in PostgreSQL (20k+ entries per user)
-   - Includes date, merchant, amount, category, location
-
 3. **Dashboard Visualization**
-
-   - Monthly breakdown of spend by category (pie chart)
-   - Spend over time (bar/line chart)
-
 4. **Savings Goal Setup**
-
-   - User inputs monthly income, goal target, and categories to focus on
-
-5. **GPT-4o Advice Generation**
-
-   - OpenAI API call processes last 30 days of user spend
-   - Returns 2–3 suggestions in plain English
-
+5. **GPT-4o Advice Generation** (Completed)
 6. **Responsive UI / UX**
-
-   - Built with Tailwind + shadcn/ui
-   - Dark/light mode toggle
-   - Mobile-first design
-
 7. **Deployment**
-   - Vercel for frontend
-   - Supabase for backend (Spring Boot service + Postgres)
-   - CI/CD via GitHub Actions
 
 ---
 
 ## 4. Stretch Enhancements (Future-Ready Design)
 
 - PostGIS Heatmaps: Store lat/lng for each transaction to enable geo-based visualization later
-- Redis Pub/Sub: Abstract a NotificationService to enable future real-time dashboard refreshes
+- Redis Pub/Sub: Abstract a NotificationService to enable real-time dashboard refreshes
 - Kafka Stream Simulation: Create a TransactionIngestionService to simulate Kafka-based ingestion
-- Terraform + AWS ECS: Structure deploy/ folder to support future infrastructure-as-code and scalable hosting
-- React Native Shell: Keep the front-end decoupled with REST APIs to allow mobile integration in the future
+- Terraform + AWS ECS: Structure deploy/ folder for infrastructure-as-code
+- React Native Shell: Keep the front-end decoupled with REST APIs for future mobile integration
 
 ---
 
@@ -124,7 +97,8 @@
 - `POST /api/auth/login` – login user
 - `GET /api/transactions` – list user transactions
 - `POST /api/transactions` – add a transaction
-- `GET /api/charts/summary` – chart data by category & month
+- `GET /api/charts/categories` – category spend over last 30 days
+- `GET /api/charts/daily` – daily spend totals over last 30 days
 - `GET /api/advice` – return GPT-4o suggestions
 - `POST /api/goals` – set/update savings goal
 

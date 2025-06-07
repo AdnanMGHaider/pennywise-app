@@ -83,3 +83,17 @@
 - Confirmed:
   - `curl` tests returned `200 OK` with appropriate JSON for both endpoints.
   - Data matches manual SQL queries and expected date ranges.
+
+### [Milestone 7 – GPT-4o Advice Generation]
+
+- Registered `OpenAIClient` bean in `OpenAIConfig`, reading `OPENAI_API_KEY`, `OPENAI_ORG_ID`, `OPENAI_PROJECT_ID` from env.
+- Implemented `AdviceService`:
+  - Fetches last 30 days of user transactions.
+  - Summarizes total spend and top 3 categories.
+  - Builds and sends GPT-4o prompt via OpenAI Chat Completions API.
+- Created `AdviceController`:
+  - `GET /api/advice` → returns JSON `{ "advice": "…" }`.
+- Secured endpoint with existing JWT filters.
+- Verified with curl:
+  - Authenticated request to `/api/advice` returns `200 OK` and actionable tips.
+- Confirmed the Spring Boot app starts and the advice endpoint works as expected.
