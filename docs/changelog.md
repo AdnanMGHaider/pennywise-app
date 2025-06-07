@@ -65,3 +65,21 @@
 - Confirmed:
   - App starts without errors and a `goals` table is created.
   - Endpoints enforce JWT protection and manual curl tests returned expected 404/201/200.
+
+### [Milestone 6 – Dashboard Visualization]
+
+- Defined `CategorySummary` DTO (`com.pennywise.controller.CategorySummary`) with fields `category` and `totalAmount`.
+- Defined `DailySummary` DTO (`com.pennywise.controller.DailySummary`) with fields `date` and `totalAmount`.
+- Extended `TransactionRepository`:
+  - `findCategorySummaries(UUID, Instant)` via JPQL to sum spend per category.
+  - `findDailySummariesRaw(UUID, Instant)` via native SQL to return raw rows of `(date, sum)`.
+  - Restored `findAllByUserIdOrderByDateDesc(UUID)` for transactions API.
+- Implemented `ChartService`:
+  - `getCategoryBreakdown(UUID, int days)` to fetch and return category summaries for last N days.
+  - `getDailySpending(UUID, int days)` to fetch raw daily rows and map them into `DailySummary` objects.
+- Built `ChartController`:
+  - `GET /api/charts/categories` → returns JSON array of category spend over last 30 days.
+  - `GET /api/charts/daily` → returns JSON array of daily spend totals over last 30 days.
+- Confirmed:
+  - `curl` tests returned `200 OK` with appropriate JSON for both endpoints.
+  - Data matches manual SQL queries and expected date ranges.
